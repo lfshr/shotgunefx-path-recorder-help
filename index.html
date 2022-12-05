@@ -1,0 +1,122 @@
+<html>
+<style>
+* {font-family: 'lucida grande',tahoma,verdana,arial,sans-serif;}
+</style>
+<head></head>
+<body>
+<h1>Shotgunefx's Path Recorder</h1>
+A EMS based utility for generating and recording path animtions to MDL. Primarily for Intro/Outro sequences, but also great for Helicopter, Plane, Car & Boat animations.
+<h3>Basic Usage</h3>
+You want to record your basic movement first. You can walk, noclip, etc. A gamepad is preferred for noclipping as you'll have better control.
+<br/><br/>
+<b>Recording</b><br/>
+Go to where you want your camera to start. When you're ready, press <b>Attack2</b> (Melee), this will start the recording, move through your scene until  you reach where you want, then press <b>Attack2</b> again to stop recording.
+<br/><br/>
+<b>Playback</b><br/>
+Press <b>Attack1</b> (Fire) to start playback. You'll likely have a path that's a bit choppy. You'll want to smooth it at least once. Chat <b>!smooth</b>. This will smooth the vertices of the path, and the angles.
+Play it back again via <b>Attack1</b>  to see if it's smooth enough. You can chat <b>!smooth</b> repeatedly, though repeated smoothings will soften corners. If you only want to smooth angles, chat <b>!smootha</b> (angles only). You can also only smooth vertices, chat <b>!smootho</b>
+If you encounter errors from smoothing, it's taken too long for the path, try setting the sampling rate lower (ex: chat <b>!smooth 5</b>) and using repeated smoothings.
+<br/><br/>
+<b>Editing Angles (Pitch, Yaw, Roll)</b><br/>
+While playing the animation, you can edit it. Forward/Back, will modify the pitch, Left/Right, the Yaw. Roll is controlled by +lookspin/+use. You'll have to bind <b>+lookspin</b> to something. I would recommend <b>Q></b> as <b>+use</b> is normally bound to <b>E</b>
+<br/><br/>
+<b>Editing Position (X,Y,Z)</b><br/>
+While playing the animation, if you hold <b>+WALK</b>, the same controls for angles will let you modify XZ. X is controlled by Left/Right (relative to the camera view), and Z is controlled by Up/Down.
+<br/><br/>
+After you edit the path, you'll likely want to smooth it again. <b>NOTE!</b> Smoothing only works on the path selection. By default, the entire path is selected, but you can select parts of a path with <b>!start</b> and <b>!end</b>
+<br/><br/>
+<b>Saving and Using</b><br/>
+When you're happy with your animation, you'll want to save it. Before you do that, you should give it a unique name. chat <b>!name <i>yourmodelname</i></b> to set the name.
+Now chat <b>!save</b> to save it. A directory will be created under <b>ems\vscriptcam</b> with the name <b>yourmodelname.mdl</b>. A few files will be generated in the directory.
+<ul>
+<li>A QC file (yourmodelname.qc)</li>
+<li>A VMF (yourmodelname.vmf)file with the prop_dyanmic in the correct position to include in your map.</li>
+<li>An SMD file with the animation. Default name is "yourmodelname_anim,smd"</li>
+<li>A <b>generated.nut</b> file, This can later be copied to scripts/vscripts and run with script_execute to continue editing in a later game session.</li>
+</ul>
+<br/><br/>
+<b>Compiling and Usage</b><br/>
+Now you'll need to compile the model to use it.
+<!--http://www.wunderboy.org/-->
+TODO
+<br><br>
+To include the model in your map, add a func_instance to your map at the origin (0,0,0) and select the generated VMF. BE SURE TO SET <b>Fixup Nested Instances</b> to <b>"No"</b>.
+
+
+<h3>Chat Commands</h3>
+<ul>
+<li><h4>General Options</h4>
+<ul>
+<li><b>!help</b> - display this page</li>
+<li><b>!undo</b> - When you press Play (Attack1) or chat !play, the path gets cloned. Entering !undo will revert to this. Smooth and other operators DO NOT create an undo!</li>
+<li><b>!dumpcam <i>filename</i></b> - This creates a file called filename.nut, which can be copied to scripts/vscripts and executed to restore the camera to this point. </li>
+<li><b>!play</b> - Plays the current record (if you want to use chatbinds)</li>
+<li><b>!record</b> - Starts recording (if you want to use chatbinds)</li>
+<li><b>!stop</b> - Stops the current record (if you want to use chatbinds)</li>
+<li><b>!draw</b> - draws the camera path (NOTE)</li>
+<li><b>!name</b> - Sets the model name. Files will be saved under ems/name.mdl, qc will create model at models/v2cam/name.mdl. DO NOT include .mdl</li>
+<li><b>!seq <i>string</i></b> - The name for the generated sequence. Defaults to intro</li>
+<li><b>!save</b> - saves the current selection to smd, writes qc, writes vmf. Also dumps the camera to generated.nut. You can copy this file to a location under scripts/vscripts and execute it later to continue editing in a later session.</li>
+<li><b>!cameraoff</b> - disables cam, when you hit play, you will be locked in position, but watch/control during playback </li>
+<li><b>!cameraon</b> - enables camera</li>
+</ul>
+</li>
+<li><h4>Recording</h4>
+<ul>
+<li><b>!eyes</b> - Will record from the player's eye position (default)</li>
+<li><b>!feet</b> - Will record from the player's feet (handy for cars and other things on ground)</li>
+<li><b>!zlock</b> - Will use the intial Z of the player for the entire record. Handy for cars, boats and other paths that travel on planes, Especially with noclipping.</li>
+<li><b>!zunlock</b> - Disable zlocking (default)</li>
+<li><b>!pitchlock</b> - Uses the intial pitch of the player for the entire record. Handy for recording helicopters. Set your angle level with setang to level it, when you start recording, pitch will be locked, you can then look up and level off and the whole record will be level. You can add the heli pitch on playback.</li>
+<li><b>!pitchunlock</b> - Disable pitch locking.</li>
+</ul>
+</li>
+<li><h4>Playback/Editing</h4>
+<ul>
+<li><b>!samples <i>integer</i></b> - Sets the number of frames to use when smoothing. The value entered will be doubled. ie: N = 10 (frame is smoothed with prev 10, next 10). Defaults to 10</li>
+<li><b>!smooth</b> - smooth the selection (vertices and angles)</li>
+<li><b>!smootho</b> - smooth only the path vertices</li>
+<li><b>!smootha</b> - smooth only the path angles</li>
+<li><b>!loopon</b> - When Playing, selection repeats after 1 second</li>
+<li><b>!loopoff</b> - Will stop after Playback has finished</li>
+<li><b>!speed <i>integer</i></b> - slows down playback, for editing fast sequences 2 = 0.5, 3 = 0.33</li>
+<li><b>!start <i>(optional framenum)</i></b> - If no frame specified, will use the currently played back frame as the start of selection</li>
+<li><b>!end <i>(optional framenum)</i></b> - If no frame specified, will use the currently played back frame as the end of selection</li>
+<li><b>!selectall</b> - Selects the entire path (ie start = 0, end = last frame)</li>
+<li><b>!pitchinc <i>number</i></b> - how much to modify (+/-)  the pitch angle when pressing Up/Down</li>
+<li><b>!yawinc <i>number</i></b> - how much to modify (+/-)  the yaw angle when pressing Left/Right</li>
+<li><b>!rollinc <i>number</i></b> - how much to modify (+/-) the roll angle when pressing +lookspin/use</li>
+<li><b>!xinc <i>number</i></b> - how much to translate (+/-) on the X axis  when pressing +walk + Left/Right</li>
+<li><b>!zinc <i>number</i></b> - how much to translate (+/-) on the Z axis  when pressing +walk + Up/Down</li>
+</ul>
+</li>
+<li><h4>Misc</h4>
+<ul>
+<li><b>!pspeed <i>float</i></b> - Set's the player's speed (via adrenaline), defualt is 260</li>
+<li><b>!gravity <i>float</i></b> - Set's the player's gravity as impulse. (Using ladders undo this)</li>
+<li><b>!friction <i>float</i></b> - Set's the player's friction as impulse. (Using ladders undo this)</li>
+</ul>
+</li>
+<li><h4>Vehicles</h4>
+<ul>
+<li><b>!alpha <i>int</i></b> - If you've spawned a vehicle, this will set it's alpha (32-255)</li>
+<li><b>!vehicles</b> - List all vehicle spawn commands. A lot more will be added as this goes, so check with this,</li>
+<li><b>!dvan</b> - Spawn Deliver Van</li>
+<li><b>!dvana</b> - Spawn Armored Deliver Van</li>
+<li><b>!sedan69</b> - Spawn the '69 Sedan</li>
+<li><b>!sedan84</b> - Spawn the '84 Sedan</li>
+<li><b>!sedan95</b> - Spawn the '95 Sedan</li>
+<li><b>!jet</b> - Spawn the F18</li>
+<li><b>!heli</b> - Spawn black heli</li>
+<li><b>!rescueheli</b> - Spawn rescue heli</li>
+</ul>
+</li>
+<div>
+A Note on Vehicles, spawning a vehicle will replace the existing one (if any), it will be named @vehicle, in case you need to send it inputs.
+</div>
+</ul>
+</body>
+</html>
+
+<h2>USAGE HINTS</h2>
+TODO
